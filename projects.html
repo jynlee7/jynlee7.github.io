@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projects — Jayden Lee</title>
+
+  <!--
+    =====================================================================
+    FONT
+    Using Google Fonts "Inter" for a clean, modern look.
+    You can swap it out at fonts.google.com
+    =====================================================================
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    /* ==================================================================
+       GLOBAL RESET & BASE
+    ================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f5f7fa;
+      color: #1a1a2e;
+      min-height: 100vh;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+
+    /* ==================================================================
+       NAVIGATION BAR
+       -- Edit the href values to point to your other pages --
+    ================================================================== */
+    nav {
+      background: #1a1a2e;
+      padding: 16px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-logo {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: #ccd6f6;
+      font-size: 0.92rem;
+      font-weight: 500;
+      transition: color 0.15s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: #64ffda;          /* ← accent highlight colour */
+    }
+
+
+    /* ==================================================================
+       PAGE HEADER
+    ================================================================== */
+    .page-header {
+      text-align: center;
+      padding: 60px 24px 30px;
+    }
+
+    .page-header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #1a1a2e;
+    }
+
+    .page-header p {
+      margin-top: 10px;
+      font-size: 1.05rem;
+      color: #555;
+    }
+
+
+    /* ==================================================================
+       PROJECTS GRID
+       auto-fill means it automatically adjusts the number of columns
+       based on the screen width. Minimum card width = 280px.
+    ================================================================== */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 28px;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px 24px 80px;
+    }
+
+
+    /* ==================================================================
+       PROJECT CARD
+       Each card is one <article> element.
+    ================================================================== */
+    .project-card {
+      position: relative;       /* for the tag badge positioning */
+      background: #ffffff;
+      border: 1px solid #dde1ea;
+      border-radius: 14px;
+      padding: 28px 24px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+
+      /* shadow */
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+      /* hover lift animation */
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .project-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+    }
+
+    /* ── TECH TAG (top-right badge) ── */
+    .project-tag {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      background: #0077b6;
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 4px 11px;
+      border-radius: 20px;
+    }
+
+    /* ── TITLE ── */
+    .project-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #1a1a2e;
+      padding-right: 80px; /* prevent overlap with the tag */
+    }
+
+    /* ── DESCRIPTION ── */
+    .project-description {
+      font-size: 0.93rem;
+      color: #555;
+      line-height: 1.65;
+      flex-grow: 1;  /* push buttons to the bottom of the card */
+    }
+
+    /* ── BUTTONS ── */
+    .project-links {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 8px 18px;
+      border-radius: 7px;
+      font-size: 0.87rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    /* Filled — "View Code" button */
+    .btn-primary {
+      background: #0077b6;
+      color: #fff;
+      border: 1px solid #0077b6;
+    }
+
+    .btn-primary:hover {
+      background: #005f99;
+      border-color: #005f99;
+      color: #fff;
+    }
+
+    /* Outlined — "Live Demo" button */
+    .btn-secondary {
+      background: transparent;
+      color: #0077b6;
+      border: 1px solid #0077b6;
+    }
+
+    .btn-secondary:hover {
+      background: #0077b6;
+      color: #fff;
+    }
+
+
+    /* ==================================================================
+       FOOTER
+    ================================================================== */
+    footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 0.85rem;
+      color: #888;
+      border-top: 1px solid #e1e4e8;
+    }
+
+
+    /* ==================================================================
+       RESPONSIVE
+    ================================================================== */
+    @media (max-width: 600px) {
+      nav {
+        padding: 14px 20px;
+      }
+
+      .nav-links {
+        gap: 16px;
+      }
+
+      .page-header h1 {
+        font-size: 1.9rem;
+      }
+
+      .projects-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ================================================================
+       NAVIGATION
+       Add links to your other pages here.
+  ================================================================ -->
+  <nav>
+    <span class="nav-logo">Jayden Lee</span>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/projects.html" class="active">Projects</a></li>
+      <!-- Add more nav links here as you build out other pages -->
+      <!-- <li><a href="/contact.html">Contact</a></li> -->
+    </ul>
+  </nav>
+
+
+  <!-- ================================================================
+       PAGE HEADER
+  ================================================================ -->
+  <header class="page-header">
+    <h1>Projects</h1>
+    <p>A collection of things I've built. Click a card to learn more.</p>
+  </header>
+
+
+  <!-- ================================================================
+       PROJECTS GRID
+       HOW TO ADD A NEW PROJECT:
+         1. Copy one <article class="project-card"> ... </article> block
+         2. Paste it below the last card, inside this <section>
+         3. Update the tag, title, description, and href links
+  ================================================================ -->
+  <main>
+    <section class="projects-grid">
+
+
+      <!-- ── PROJECT 1 ──────────────────────────────────────────────── -->
+      <article class="project-card">
+
+        <!-- Tech/language label (top-right badge) -->
+        <span class="project-tag">Python</span>
+
+        <!-- Project title -->
+        <h2 class="project-title">Project One</h2>
+
+        <!-- Short 1–2 sentence description -->
+        <p class="project-description">
+          Add a short description of this project here.
+          What does it do? What problem does it solve?
+        </p>
+
+        <!-- Links — replace # with your GitHub / demo URL -->
+        <div class="project-links">
+          <a href="#" class="btn btn-primary">View Code</a>
+          <a href="#" class="btn btn-secondary">Live Demo</a>
+        </div>
+
+      </article>
+      <!-- end PROJECT 1 -->
+
+
+      <!-- ── PROJECT 2 ──────────────────────────────────────────────── -->
+      <article class="project-card">
+
+        <span class="project-tag">JavaScript</span>
+
+        <h2 class="project-title">Project Two</h2>
+
+        <p class="project-description">
+          Add a short description of this project here.
+          What does it do? What problem does it solve?
+        </p>
+
+        <div class="project-links">
+          <a href="#" class="btn btn-primary">View Code</a>
+          <a href="#" class="btn btn-secondary">Live Demo</a>
+        </div>
+
+      </article>
+      <!-- end PROJECT 2 -->
+
+
+      <!-- ── PROJECT 3 ──────────────────────────────────────────────── -->
+      <article class="project-card">
+
+        <span class="project-tag">Machine Learning</span>
+
+        <h2 class="project-title">Project Three</h2>
+
+        <p class="project-description">
+          Add a short description of this project here.
+          What does it do? What problem does it solve?
+        </p>
+
+        <div class="project-links">
+          <a href="#" class="btn btn-primary">View Code</a>
+          <a href="#" class="btn btn-secondary">Live Demo</a>
+        </div>
+
+      </article>
+      <!-- end PROJECT 3 -->
+
+
+    </section>
+  </main>
+
+
+  <!-- ================================================================
+       FOOTER — update the name/year as needed
+  ================================================================ -->
+  <footer>
+    <p>© 2025 Jayden Lee</p>
+  </footer>
+
+
+</body>
+</html>

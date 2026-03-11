@@ -16,7 +16,7 @@
 ---
 
 ### Projects
-Check out my [Projects page](/projects) to see what I've been building.
+Check out my [Projects page](/projects.html) to see what I've been building.
 
 ---
 

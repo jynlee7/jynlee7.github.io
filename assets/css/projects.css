@@ -1,0 +1,161 @@
+/* =============================================================
+   projects.css — Styles for the Projects page
+   File: /assets/css/projects.css
+
+   Sections:
+     1. Hero / Page Header
+     2. Projects Grid Layout
+     3. Project Card
+     4. Card Tag (language / tech label)
+     5. Card Links / Buttons
+     6. Responsive (mobile)
+   ============================================================= */
+
+
+/* ── 1. HERO / PAGE HEADER ──────────────────────────────────── */
+.projects-hero {
+  text-align: center;
+  padding: 40px 0 20px;
+  border-bottom: 2px solid #e1e4e8;
+  margin-bottom: 40px;
+}
+
+.projects-hero h1 {
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 8px;
+}
+
+.projects-subtitle {
+  font-size: 1.05rem;
+  color: #555;
+}
+
+
+/* ── 2. PROJECTS GRID LAYOUT ────────────────────────────────── */
+/*
+  Displays cards in a 3-column responsive grid.
+  On smaller screens it automatically drops to 2, then 1 column.
+*/
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 28px;
+  padding: 0 0 60px;
+}
+
+
+/* ── 3. PROJECT CARD ─────────────────────────────────────────── */
+.project-card {
+  position: relative;           /* needed for the tag badge */
+  background: #fff;
+  border: 1px solid #d0d7de;
+  border-radius: 12px;
+  padding: 28px 24px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  /* subtle shadow */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+
+  /* smooth hover lift */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.project-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.project-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1a1a2e;
+  margin: 0;
+}
+
+.project-description {
+  font-size: 0.93rem;
+  color: #555;
+  line-height: 1.6;
+  flex-grow: 1;   /* pushes buttons to the bottom */
+  margin: 0;
+}
+
+
+/* ── 4. CARD TAG ────────────────────────────────────────────── */
+/*
+  The small badge in the top-right corner showing the tech/language.
+  Change the background-color here to style all tags at once,
+  or target specific tags by their text if needed.
+*/
+.project-tag {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: #0077b6;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 3px 10px;
+  border-radius: 20px;
+  text-transform: uppercase;
+}
+
+
+/* ── 5. CARD LINKS / BUTTONS ─────────────────────────────────── */
+.project-links {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+/* Shared button styles */
+.project-btn {
+  display: inline-block;
+  padding: 7px 16px;
+  border-radius: 6px;
+  font-size: 0.87rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+/* "View Code" — filled blue */
+.project-btn.primary {
+  background: #0077b6;
+  color: #fff;
+}
+
+.project-btn.primary:hover {
+  background: #005f99;
+  color: #fff;
+}
+
+/* "Live Demo" — outlined */
+.project-btn.secondary {
+  background: transparent;
+  color: #0077b6;
+  border: 1px solid #0077b6;
+}
+
+.project-btn.secondary:hover {
+  background: #0077b6;
+  color: #fff;
+}
+
+
+/* ── 6. RESPONSIVE ──────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .projects-hero h1 {
+    font-size: 1.8rem;
+  }
+
+  .projects-grid {
+    grid-template-columns: 1fr;
+  }
+}

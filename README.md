@@ -1,15 +1,24 @@
-# (Job)
+# Jayden Lee
+
+### About Me
+*(Add a short bio here — e.g., your year, major, and interests)*
+
+---
 
 ### Education
-etc
+*(Add your school, degree, and graduation year here)*
+
+---
 
 ### Work Experience
-etc
-- projects
+*(List your work or internship experience here)*
+
+---
 
 ### Projects
-etc
+Check out my [Projects page](/projects) to see what I've been building.
 
+---
 
-
-etc
+### Contact
+*(Add your email, LinkedIn, or GitHub links here)*

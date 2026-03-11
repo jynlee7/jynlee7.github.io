@@ -1,299 +1,313 @@
----
-layout: default
-title: Project One
----
+<!DOCTYPE html>
+<html lang="en">
 
-<style>
-    /* ================================================================
-     PROJECT PAGE — Blog-style writeup
-     
-     This page uses the Jekyll Minimal theme's default white layout.
-     All content goes between the <article> tags below.
-     
-     SECTIONS you can use:
-       <h2>  — major section heading
-       <h3>  — sub-section heading
-       <p>   — paragraph of text
-       <ul> / <ol> — bullet / numbered lists
-       <img> — images (put images in this project's folder)
-       <pre><code> — code blocks
-       .result-grid — image grid for showing results side by side
-  ================================================================ */
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project One — Jayden Lee</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        /* ================================================================
+       PROJECT PAGE STYLES
+       To change colours, edit the :root variables.
+    ================================================================ */
+        :root {
+            --accent: #0077b6;
+            --text: #333;
+            --muted: #666;
+            --border: #e1e4e8;
+            --code-bg: #f6f8fa;
+        }
 
-    /* Back link at the top */
-    .back-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 0.88rem;
-        color: #0077b6;
-        text-decoration: none;
-        margin-bottom: 28px;
-    }
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    .back-link:hover {
-        text-decoration: underline;
-    }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #fff;
+            color: var(--text);
+            line-height: 1.65;
+        }
 
-    /* Page title area */
-    .project-header {
-        border-bottom: 2px solid #e1e4e8;
-        padding-bottom: 20px;
-        margin-bottom: 36px;
-    }
+        .page {
+            max-width: 780px;
+            margin: 0 auto;
+            padding: 50px 28px 100px;
+        }
 
-    .project-header h1 {
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: #1a1a2e;
-        margin: 0 0 8px;
-    }
+        /* Back link */
+        .back {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.87rem;
+            color: var(--accent);
+            margin-bottom: 32px;
+        }
 
-    .project-meta {
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-        align-items: center;
-    }
+        .back:hover {
+            text-decoration: underline;
+        }
 
-    /* tech tag badge */
-    .meta-tag {
-        font-size: 0.75rem;
-        font-weight: 600;
-        background: #eef2f7;
-        color: #0077b6;
-        padding: 3px 10px;
-        border-radius: 20px;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-    }
+        /* ── PAGE HEADER ── */
+        .project-header {
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+        }
 
-    .meta-links a {
-        font-size: 0.85rem;
-        color: #0077b6;
-        text-decoration: none;
-        margin-right: 14px;
-    }
+        .project-header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #111;
+            margin-bottom: 10px;
+        }
 
-    .meta-links a:hover {
-        text-decoration: underline;
-    }
+        .project-meta {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
 
-    /* Article body typography */
-    article h2 {
-        font-size: 1.25rem;
-        font-weight: 700;
-        margin: 40px 0 12px;
-        color: #1a1a2e;
-        border-left: 3px solid #0077b6;
-        padding-left: 10px;
-    }
+        /* tech badge */
+        .meta-tag {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            background: #eef2f7;
+            color: var(--accent);
+            padding: 3px 10px;
+            border-radius: 20px;
+        }
 
-    article h3 {
-        font-size: 1.05rem;
-        font-weight: 600;
-        margin: 24px 0 8px;
-        color: #333;
-    }
+        /* external links */
+        .meta-links a {
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin-right: 14px;
+        }
 
-    article p {
-        font-size: 0.97rem;
-        line-height: 1.8;
-        color: #444;
-        margin-bottom: 14px;
-    }
+        .meta-links a:hover {
+            text-decoration: underline;
+        }
 
-    article ul,
-    article ol {
-        padding-left: 24px;
-        margin-bottom: 14px;
-    }
+        /* ── ARTICLE BODY ── */
 
-    article li {
-        font-size: 0.95rem;
-        line-height: 1.75;
-        color: #444;
-        margin-bottom: 6px;
-    }
+        /* Section heading — add a left accent bar */
+        article h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #111;
+            margin: 40px 0 12px;
+            padding-left: 12px;
+            border-left: 3px solid var(--accent);
+        }
 
-    /* code block */
-    article pre {
-        background: #f6f8fa;
-        border: 1px solid #e1e4e8;
-        border-radius: 6px;
-        padding: 16px;
-        overflow-x: auto;
-        font-size: 0.85rem;
-        margin-bottom: 16px;
-    }
+        article h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text);
+            margin: 24px 0 8px;
+        }
 
-    /* inline image with caption */
-    .project-img {
-        max-width: 100%;
-        border: 1px solid #e1e4e8;
-        border-radius: 8px;
-        margin: 16px 0 6px;
-    }
+        article p {
+            font-size: 0.96rem;
+            color: var(--text);
+            margin-bottom: 14px;
+            line-height: 1.8;
+        }
 
-    .img-caption {
-        font-size: 0.82rem;
-        color: #666;
-        margin-bottom: 20px;
-        font-style: italic;
-    }
+        article ul,
+        article ol {
+            padding-left: 22px;
+            margin-bottom: 14px;
+        }
 
-    /* side-by-side image grid */
-    .result-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 12px;
-        margin: 16px 0;
-    }
+        article li {
+            font-size: 0.94rem;
+            line-height: 1.75;
+            color: var(--text);
+            margin-bottom: 5px;
+        }
 
-    .result-grid img {
-        width: 100%;
-        border: 1px solid #e1e4e8;
-        border-radius: 6px;
-    }
+        /* code block */
+        article pre {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 16px;
+            overflow-x: auto;
+            font-size: 0.84rem;
+            margin-bottom: 16px;
+        }
 
-    /* callout / note box */
-    .callout {
-        background: #f0f7ff;
-        border-left: 4px solid #0077b6;
-        border-radius: 0 6px 6px 0;
-        padding: 12px 16px;
-        margin: 20px 0;
-        font-size: 0.92rem;
-        color: #333;
-        line-height: 1.7;
-    }
-</style>
+        /* inline highlight box */
+        .callout {
+            background: #f0f7ff;
+            border-left: 4px solid var(--accent);
+            border-radius: 0 6px 6px 0;
+            padding: 12px 16px;
+            margin: 20px 0;
+            font-size: 0.92rem;
+            color: var(--text);
+            line-height: 1.7;
+        }
 
+        /*
+      IMAGES
+      To add an image:
+        1. Put the file in /projects/project-1/   (same folder as this page)
+        2. Use: <img src="my-image.png" class="project-img" alt="description">
+                <p class="img-caption">Caption goes here</p>
+    */
+        .project-img {
+            max-width: 100%;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin: 16px 0 6px;
+        }
 
-<!-- Back to home -->
-<a href="/" class="back-link">← Back to Projects</a>
+        .img-caption {
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-bottom: 20px;
+            font-style: italic;
+        }
 
+        /* side-by-side result grid */
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 10px;
+            margin: 16px 0;
+        }
 
-<!-- ================================================================
-     PAGE HEADER — update title, tags, and links
-================================================================ -->
-<div class="project-header">
-    <h1>Project One</h1>
-    <div class="project-meta">
-        <!-- Tech tags — add one per technology used -->
-        <span class="meta-tag">Python</span>
-        <span class="meta-tag">Tag 2</span>
+        .result-grid img {
+            width: 100%;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+        }
+    </style>
+</head>
 
-        <!-- External links to your repo / demo -->
-        <div class="meta-links">
-            <a href="#" target="_blank">GitHub ↗</a>
-            <a href="#" target="_blank">Live Demo ↗</a>
+<body>
+    <div class="page">
+
+        <!-- Back to home -->
+        <a href="/" class="back">← Back</a>
+
+        <!-- ================================================================
+         PAGE HEADER — update title, tags, and links
+    ================================================================ -->
+        <div class="project-header">
+            <h1>Project One</h1>
+            <div class="project-meta">
+                <!-- Tech tags — one per technology used -->
+                <span class="meta-tag">Python</span>
+                <!-- <span class="meta-tag">Another Tag</span> -->
+
+                <!-- External repo / demo links — update href values -->
+                <div class="meta-links">
+                    <a href="#" target="_blank">GitHub ↗</a>
+                    <a href="#" target="_blank">Live Demo ↗</a>
+                </div>
+            </div>
         </div>
+
+
+        <!-- ================================================================
+         ARTICLE — write your project writeup here
+         
+         Sections:
+           Overview   — what did you build & why?
+           Approach   — how did you solve it?
+           Challenges — what was hard?
+           Results    — what did you achieve?
+           Reflection — what would you do differently?
+    ================================================================ -->
+        <article>
+
+            <!-- ── OVERVIEW ───────────────────────────────────────────── -->
+            <h2>Overview</h2>
+
+            <p>
+                Describe what this project is and why you built it. Give the reader
+                enough context to understand the purpose before the technical details.
+            </p>
+
+
+            <!-- ── APPROACH ───────────────────────────────────────────── -->
+            <h2>Approach</h2>
+
+            <p>
+                Walk through your reasoning and the steps you took to build the solution.
+            </p>
+
+            <ol>
+                <li><strong>Step 1:</strong> Describe the first major step you took.</li>
+                <li><strong>Step 2:</strong> Describe the second step.</li>
+                <li><strong>Step 3:</strong> And so on...</li>
+            </ol>
+
+            <!--
+        Code example:
+        <pre><code>def my_function():
+    return "hello world"</code></pre>
+      -->
+
+
+            <!-- ── CHALLENGES ─────────────────────────────────────────── -->
+            <h2>Challenges</h2>
+
+            <p>
+                What was the hardest part? What bugs or blockers did you hit?
+            </p>
+
+            <div class="callout">
+                💡 <strong>Key insight:</strong> Use this box to highlight an important
+                discovery or design decision.
+            </div>
+
+
+            <!-- ── RESULTS ────────────────────────────────────────────── -->
+            <h2>Results</h2>
+
+            <p>
+                What did you achieve? Include metrics, screenshots, or output examples.
+            </p>
+
+            <!--
+        Image grid example:
+        <div class="result-grid">
+          <img src="result-a.png" alt="Result A">
+          <img src="result-b.png" alt="Result B">
+        </div>
+      -->
+
+
+            <!-- ── REFLECTION ─────────────────────────────────────────── -->
+            <h2>Reflection</h2>
+
+            <p>
+                What would you do differently? What did you learn? What are next steps?
+            </p>
+
+            <ul>
+                <li>Improvement idea 1</li>
+                <li>Improvement idea 2</li>
+            </ul>
+
+        </article>
+
     </div>
-</div>
+</body>
 
-
-<!-- ================================================================
-     ARTICLE — write your project blog post here.
-     
-     Sections to fill in:
-       Overview    — what did you build & why?
-       Approach    — how did you think about solving it?
-       Challenges  — what was hard?
-       Results     — what did you achieve?
-       Reflection  — what would you do differently?
-================================================================ -->
-<article>
-
-    <!-- ── OVERVIEW ───────────────────────────────────────────── -->
-    <h2>Overview</h2>
-
-    <p>
-        Describe what this project is. What problem does it solve?
-        Why did you choose to build it? Give the reader context so they
-        understand the purpose before diving into the technical details.
-    </p>
-
-    <p>
-        You can write as much or as little as you want here. Think of this
-        as a technical blog post you'd be proud to share with a recruiter or
-        a friend.
-    </p>
-
-
-    <!-- ── APPROACH ───────────────────────────────────────────── -->
-    <h2>Approach</h2>
-
-    <p>
-        How did you think about the problem? Walk through your reasoning,
-        design decisions, and the steps you took to build the solution.
-    </p>
-
-    <ol>
-        <li>
-            <strong>Step 1:</strong> Describe the first major step you took.
-        </li>
-        <li>
-            <strong>Step 2:</strong> Describe the second step.
-        </li>
-        <li>
-            <strong>Step 3:</strong> And so on...
-        </li>
-    </ol>
-
-    <!--
-    To add an image:
-      1. Put the image file in /projects/project-1/ (same folder as this file)
-      2. Use:
-         <img src="my-image.png" class="project-img" alt="Description of image">
-         <p class="img-caption">Caption describing the image</p>
-  -->
-
-
-    <!-- ── CHALLENGES ─────────────────────────────────────────── -->
-    <h2>Challenges</h2>
-
-    <p>
-        What was the hardest part? What bugs or blockers did you hit,
-        and how did you resolve them?
-    </p>
-
-    <div class="callout">
-        💡 <strong>Key insight:</strong> Use callout boxes to highlight an interesting
-        discovery or a key decision you made during the project.
-    </div>
-
-
-    <!-- ── RESULTS ────────────────────────────────────────────── -->
-    <h2>Results</h2>
-
-    <p>
-        What did you achieve? Include metrics, screenshots, or outputs
-        that demonstrate the project working.
-    </p>
-
-    <!--
-    For a grid of result images:
-    <div class="result-grid">
-      <img src="result-1.png" alt="Result 1">
-      <img src="result-2.png" alt="Result 2">
-      <img src="result-3.png" alt="Result 3">
-    </div>
-  -->
-
-
-    <!-- ── REFLECTION ─────────────────────────────────────────── -->
-    <h2>Reflection</h2>
-
-    <p>
-        What would you do differently if you were starting over? What did
-        you learn? What are the next steps or potential improvements?
-    </p>
-
-    <ul>
-        <li>Improvement idea 1</li>
-        <li>Improvement idea 2</li>
-        <li>Improvement idea 3</li>
-    </ul>
-
-</article>
+</html>

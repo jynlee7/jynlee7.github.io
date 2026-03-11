@@ -1,303 +1,349 @@
----
-layout: default
----
+<!DOCTYPE html>
+<html lang="en">
 
-<style>
-    /* ================================================================
-     HOMEPAGE — White, clean Jekyll-inspired layout
-     
-     STRUCTURE:
-       .profile-sidebar  — left column: photo + bio
-       .project-list     — right column: clickable project entries
-     
-     To change colours, edit the :root variables below.
-  ================================================================ */
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jayden Lee</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        /* ================================================================
+       DESIGN TOKENS — edit these to change colours site-wide
+    ================================================================ */
+        :root {
+            --accent: #0077b6;
+            /* link / button colour   */
+            --text: #333;
+            /* body text              */
+            --muted: #666;
+            /* secondary text         */
+            --border: #e1e4e8;
+            /* divider lines          */
+            --tag-bg: #eef2f7;
+            /* tech badge background  */
+            --tag-color: #0077b6;
+            /* tech badge text        */
+            --hover-bg: #f6f8fa;
+            /* project row hover      */
+        }
 
-    :root {
-        --accent: #0077b6;
-        /* link / button colour    */
-        --text: #333;
-        /* body text               */
-        --muted: #666;
-        /* secondary text          */
-        --border: #e1e4e8;
-        /* divider lines           */
-        --tag-bg: #eef2f7;
-        /* project tag background  */
-        --tag-color: #0077b6;
-        /* project tag text        */
-        --hover-bg: #f6f8fa;
-        /* project row hover       */
-    }
+        /* ================================================================
+       BASE
+    ================================================================ */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    /* ── LAYOUT WRAPPER ────────────────────────────────────────── */
-    .homepage-wrapper {
-        display: flex;
-        gap: 60px;
-        align-items: flex-start;
-        margin-top: 20px;
-    }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #fff;
+            color: var(--text);
+            line-height: 1.65;
+        }
 
-    /* ── LEFT: PROFILE SIDEBAR ─────────────────────────────────── */
-    .profile-sidebar {
-        flex: 0 0 200px;
-        /* fixed 200px width, does not grow */
-        text-align: center;
-    }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
 
-    /*
-    PHOTO — replace the placeholder div with:
-      <img src="/assets/img/headshot.jpg" class="profile-photo" alt="Jayden Lee">
-    after placing your photo at /assets/img/headshot.jpg
-  */
-    .profile-photo,
-    .profile-photo-placeholder {
-        width: 160px;
-        height: 160px;
-        border-radius: 50%;
-        /* circular crop */
-        margin: 0 auto 16px;
-        display: block;
-        object-fit: cover;
-    }
+        /* ================================================================
+       PAGE WRAPPER — centers content, max 860px wide
+    ================================================================ */
+        .page {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 60px 28px 80px;
+        }
 
-    .profile-photo-placeholder {
-        background: #e8edf3;
-        border: 2px dashed var(--border);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.78rem;
-        color: var(--muted);
-        line-height: 1.4;
-    }
+        /* ================================================================
+       LAYOUT — sidebar left, project list right
+    ================================================================ */
+        .layout {
+            display: flex;
+            gap: 56px;
+            align-items: flex-start;
+        }
 
-    .profile-name {
-        font-size: 1.1rem;
-        font-weight: 700;
-        color: var(--text);
-        margin-bottom: 6px;
-    }
+        /* ================================================================
+       LEFT SIDEBAR — photo + name + bio + links
+    ================================================================ */
+        .sidebar {
+            flex: 0 0 180px;
+            text-align: center;
+        }
 
-    .profile-bio {
-        font-size: 0.88rem;
-        color: var(--muted);
-        line-height: 1.6;
-        margin-bottom: 16px;
-    }
+        /*
+      PHOTO
+      To add your headshot:
+        1. Place the image at /assets/img/headshot.jpg
+        2. Delete the <div class="photo-placeholder"> below
+        3. Paste this in its place:
+           <img src="/assets/img/headshot.jpg" class="photo" alt="Jayden Lee">
+    */
+        .photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+            margin: 0 auto 14px;
+        }
 
-    /* small icon links row (GitHub, LinkedIn, Email) */
-    .profile-links {
-        display: flex;
-        justify-content: center;
-        gap: 12px;
-        flex-wrap: wrap;
-    }
+        .photo-placeholder {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: #e8edf3;
+            border: 2px dashed var(--border);
+            margin: 0 auto 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.78rem;
+            color: var(--muted);
+            line-height: 1.4;
+        }
 
-    .profile-link {
-        font-size: 0.8rem;
-        color: var(--accent);
-        border: 1px solid var(--border);
-        padding: 4px 10px;
-        border-radius: 4px;
-        transition: background 0.15s;
-    }
+        .sidebar-name {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
 
-    .profile-link:hover {
-        background: var(--hover-bg);
-    }
+        /* Short bio — 2-3 sentences max */
+        .sidebar-bio {
+            font-size: 0.84rem;
+            color: var(--muted);
+            line-height: 1.6;
+            margin-bottom: 14px;
+        }
 
-    /* ── DIVIDER ────────────────────────────────────────────────── */
-    .sidebar-divider {
-        width: 1px;
-        background: var(--border);
-        align-self: stretch;
-        /* stretches to full height of row */
-        min-height: 300px;
-    }
-
-    /* ── RIGHT: PROJECT LIST ────────────────────────────────────── */
-    .project-list-section {
-        flex: 1;
-        /* takes remaining width */
-    }
-
-    .project-list-section h2 {
-        font-size: 1rem;
-        font-weight: 600;
-        color: var(--muted);
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        margin-bottom: 20px;
-        border-bottom: 2px solid var(--border);
-        padding-bottom: 8px;
-    }
-
-    /* each clickable project row */
-    .project-entry {
-        display: block;
-        /* make the whole row a link */
-        padding: 16px 12px;
-        border-bottom: 1px solid var(--border);
-        text-decoration: none;
-        color: inherit;
-        transition: background 0.15s;
-        border-radius: 6px;
-    }
-
-    .project-entry:hover {
-        background: var(--hover-bg);
-    }
-
-    .project-entry-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-    }
-
-    .project-entry-title {
-        font-size: 1rem;
-        font-weight: 600;
-        color: var(--accent);
-        margin: 0;
-    }
-
-    /* language/tech badge */
-    .project-entry-tag {
-        font-size: 0.72rem;
-        font-weight: 600;
-        background: var(--tag-bg);
-        color: var(--tag-color);
-        padding: 3px 10px;
-        border-radius: 20px;
-        white-space: nowrap;
-        flex-shrink: 0;
-    }
-
-    .project-entry-desc {
-        font-size: 0.88rem;
-        color: var(--muted);
-        margin: 6px 0 0;
-        line-height: 1.55;
-    }
-
-    /* arrow indicator on the right */
-    .project-entry-arrow {
-        font-size: 1rem;
-        color: var(--border);
-        flex-shrink: 0;
-    }
-
-    /* responsive: stack on mobile */
-    @media (max-width: 640px) {
-        .homepage-wrapper {
+        /* Social link buttons */
+        .sidebar-links {
+            display: flex;
             flex-direction: column;
-            gap: 32px;
+            gap: 6px;
         }
 
-        .sidebar-divider {
-            display: none;
+        .sidebar-link {
+            font-size: 0.8rem;
+            color: var(--accent);
+            border: 1px solid var(--border);
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background 0.15s;
         }
 
-        .profile-sidebar {
-            width: 100%;
+        .sidebar-link:hover {
+            background: var(--hover-bg);
         }
-    }
-</style>
+
+        /* ── VERTICAL DIVIDER ── */
+        .divider {
+            width: 1px;
+            background: var(--border);
+            align-self: stretch;
+            min-height: 280px;
+            flex-shrink: 0;
+        }
+
+        /* ================================================================
+       RIGHT — project list
+    ================================================================ */
+        .project-list {
+            flex: 1;
+        }
+
+        .project-list h2 {
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--muted);
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 8px;
+            margin-bottom: 4px;
+        }
+
+        /* ================================================================
+       PROJECT ROW — clickable entry
+       To add a project: copy one <a class="project-row"> block,
+       paste it below the last one, and update all values inside.
+    ================================================================ */
+        .project-row {
+            display: block;
+            padding: 15px 10px;
+            border-bottom: 1px solid var(--border);
+            border-radius: 6px;
+            transition: background 0.15s;
+            color: inherit;
+        }
+
+        .project-row:hover {
+            background: var(--hover-bg);
+        }
+
+        .project-row-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Project title */
+        .project-row-title {
+            font-size: 0.97rem;
+            font-weight: 600;
+            color: var(--accent);
+            flex: 1;
+            margin: 0;
+        }
+
+        /* Tech badge */
+        .project-row-tag {
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            background: var(--tag-bg);
+            color: var(--tag-color);
+            padding: 3px 9px;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+
+        /* → arrow */
+        .project-row-arrow {
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+
+        /* One-line description under the title */
+        .project-row-desc {
+            font-size: 0.84rem;
+            color: var(--muted);
+            margin: 5px 0 0;
+            line-height: 1.5;
+        }
+
+        /* ================================================================
+       RESPONSIVE
+    ================================================================ */
+        @media (max-width: 600px) {
+            .layout {
+                flex-direction: column;
+                gap: 32px;
+            }
+
+            .divider {
+                display: none;
+            }
+
+            .sidebar {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+        <div class="layout">
+
+            <!-- ===========================================================
+           SIDEBAR — update name, bio, and links below
+      =========================================================== -->
+            <aside class="sidebar">
+
+                <!--
+          PHOTO: swap this <div> for:
+            <img src="/assets/img/headshot.jpg" class="photo" alt="Jayden Lee">
+          after placing headshot.jpg in /assets/img/
+        -->
+                <div class="photo-placeholder">📷<br>Add photo</div>
+
+                <!-- Your name -->
+                <p class="sidebar-name">Jayden Lee</p>
+
+                <!-- Short bio — keep to 2-3 sentences -->
+                <p class="sidebar-bio">
+                    Software developer passionate about full-stack and machine learning.
+                    Currently studying at [Your University].
+                </p>
+
+                <!-- Social links — update href values -->
+                <div class="sidebar-links">
+                    <a href="https://github.com/jynlee7" target="_blank" class="sidebar-link">GitHub</a>
+                    <a href="https://linkedin.com/in/jeyl" target="_blank" class="sidebar-link">LinkedIn</a>
+                    <a href="mailto:jayden@example.com" class="sidebar-link">Email</a>
+                </div>
+
+            </aside>
+
+            <!-- vertical line -->
+            <div class="divider"></div>
+
+            <!-- ===========================================================
+           PROJECT LIST
+           To add a new project:
+             1. Copy a <a class="project-row"> block
+             2. Paste it below the last one
+             3. Update href, title, tag, and description
+             4. Create the page at /projects/project-N/index.html
+      =========================================================== -->
+            <section class="project-list">
+                <h2>Projects</h2>
 
 
-<div class="homepage-wrapper">
+                <!-- ── PROJECT 1 ─────────────────────────────────────── -->
+                <a href="/projects/project-1/index.html" class="project-row">
+                    <div class="project-row-header">
+                        <h3 class="project-row-title">1. Building an LLM from scratch</h3>
+                        <span class="project-row-tag">Machine Learning</span>
+                        <span class="project-row-tag">PyTorch</span>
+                        <span class="project-row-arrow">→</span>
+                    </div>
+                    <!-- <p class="project-row-desc">
+                        Building an LLM from scratch.
+                    </p> -->
+                </a>
 
-    <!-- ============================================================
-       LEFT SIDEBAR — photo + bio + links
-       ============================================================ -->
-    <aside class="profile-sidebar">
 
-        <!--
-      PHOTO: once you have a headshot ready, replace this <div> with:
-        <img src="/assets/img/headshot.jpg" class="profile-photo" alt="Jayden Lee">
-      and place your image at /assets/img/headshot.jpg
-    -->
-        <div class="profile-photo-placeholder">📷<br>Add photo</div>
+                <!-- ── PROJECT 2 ─────────────────────────────────────── -->
+                <!-- <a href="/projects/project-2/index.html" class="project-row">
+                    <div class="project-row-header">
+                        <h3 class="project-row-title">Project Two</h3>
+                        <span class="project-row-tag">JavaScript</span>
+                        <span class="project-row-arrow">→</span>
+                    </div>
+                    <p class="project-row-desc">
+                        One sentence summary of what this project does.
+                    </p>
+                </a> -->
 
-        <!-- Your name -->
-        <p class="profile-name">Jayden Lee</p>
 
-        <!-- 2–4 sentence bio. Keep it short — this is a sidebar. -->
-        <p class="profile-bio">
-            Software developer passionate about full-stack development and machine learning.
-            Currently studying at [Your University].
-            Always looking for new problems to solve.
-        </p>
+                <!-- ── PROJECT 3 ─────────────────────────────────────── -->
+                <!-- <a href="/projects/project-3/index.html" class="project-row">
+                    <div class="project-row-header">
+                        <h3 class="project-row-title">Project Three</h3>
+                        <span class="project-row-tag">Machine Learning</span>
+                        <span class="project-row-arrow">→</span>
+                    </div>
+                    <p class="project-row-desc">
+                        One sentence summary of what this project does.
+                    </p>
+                </a> -->
 
-        <!-- Social / contact links -->
-        <div class="profile-links">
-            <!-- Update these hrefs to your real profiles -->
-            <a href="https://github.com/jynlee7" target="_blank" class="profile-link">GitHub</a>
-            <a href="https://linkedin.com/in/jayden-lee" target="_blank" class="profile-link">LinkedIn</a>
-            <a href="mailto:jayden@example.com" class="profile-link">Email</a>
+
+            </section>
+
         </div>
+    </div>
+</body>
 
-    </aside>
-
-    <!-- vertical divider -->
-    <div class="sidebar-divider"></div>
-
-
-    <!-- ============================================================
-       RIGHT COLUMN — project list
-       Each .project-entry links to a blog-style detail page.
-       
-       TO ADD A PROJECT:
-         1. Copy one <a class="project-entry"> block
-         2. Update the href to the project folder (e.g. /projects/project-4/)
-         3. Update the title, tag, and description
-         4. Create the detail page at that path
-       ============================================================ -->
-    <section class="project-list-section">
-        <h2>Projects</h2>
-
-
-        <!-- ── PROJECT 1 ──────────────────────────────────────────── -->
-        <a href="/projects/project-1/" class="project-entry">
-            <div class="project-entry-header">
-                <h3 class="project-entry-title">Project One</h3>
-                <span class="project-entry-tag">Python</span>
-                <span class="project-entry-arrow">→</span>
-            </div>
-            <p class="project-entry-desc">
-                One sentence summary of what this project does and what you learned from it.
-            </p>
-        </a>
-
-
-        <!-- ── PROJECT 2 ──────────────────────────────────────────── -->
-        <a href="/projects/project-2/" class="project-entry">
-            <div class="project-entry-header">
-                <h3 class="project-entry-title">Project Two</h3>
-                <span class="project-entry-tag">JavaScript</span>
-                <span class="project-entry-arrow">→</span>
-            </div>
-            <p class="project-entry-desc">
-                One sentence summary of what this project does and what you learned from it.
-            </p>
-        </a>
-
-
-        <!-- ── PROJECT 3 ──────────────────────────────────────────── -->
-        <a href="/projects/project-3/" class="project-entry">
-            <div class="project-entry-header">
-                <h3 class="project-entry-title">Project Three</h3>
-                <span class="project-entry-tag">Machine Learning</span>
-                <span class="project-entry-arrow">→</span>
-            </div>
-            <p class="project-entry-desc">
-                One sentence summary of what this project does and what you learned from it.
-            </p>
-        </a>
-
-
-    </section>
-
-</div>
+</html>

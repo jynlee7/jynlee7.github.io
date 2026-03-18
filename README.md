@@ -20,7 +20,7 @@ Data Science student at **UC Berkeley** passionate about ML research. Currently 
 
 | # | Title | Area |
 |---|---|---|
-| 1 | [Building an LLM from Scratch](projects/project-1/index.html) | Machine Learning |
+| 1 | [Building an LLM from Scratch](https://jynlee7.github.io/projects/project-1/index.html) | Machine Learning |
 
 ## Tech Stack
 

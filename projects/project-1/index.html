@@ -259,20 +259,20 @@
                 We know that most modern LLMs are based on the <i>transformer</i> architecture.
             </p>
 
-            <img src="transformer.png" class="project-img" alt="transformer">
+            <img src="img/transformer.png" class="project-img" alt="transformer">
             <p class="img-caption">Transformer architecture</p>
 
             <h3>Step 1: Tokenization</h3>
 
             <p>
-                Before a model can learn anything, it needs a way to read text. The computer 
-                does not understand letters, only numbers. Tokenization converts raw text into 
+                Before a model can learn anything, it needs a way to read text. The computer
+                does not understand letters, only numbers. Tokenization converts raw text into
                 numbers the model can process.
             </p>
 
             <p>
-                I used character-level tokenization. Each unique character in my corpus 
-                becomes its own token. No complex algorithms, no merging rules. Just count 
+                I used character-level tokenization. Each unique character in my corpus
+                becomes its own token. No complex algorithms, no merging rules. Just count
                 every unique character and assign it an ID.
             </p>
 
@@ -297,7 +297,7 @@ class Tokenizer:
         return ''.join(self.id_to_token[i] for i in ids if i in self.id_to_token)</code></pre>
 
             <p>
-                Running this on my iMessages gave a vocabulary size of <strong>778</strong> unique characters. 
+                Running this on my iMessages gave a vocabulary size of <strong>778</strong> unique characters.
                 This includes every letter, emoji, punctuation mark, and URL I have ever texted.
             </p>
 
@@ -315,6 +315,115 @@ class Tokenizer:
                 <li><strong>LM Head</strong> — Project back to vocabulary for next-token prediction</li>
             </ul>
 
+            <h4>Token Embedding</h4>
+
+            <p>
+                The embedding layer is a matrix of shape (778, 128). Each row corresponds to one
+                character in our vocabulary. During training, these vectors get adjusted
+                to capture meaningful relationships between characters.
+            </p>
+
+            <pre><code>self.token_embedding = nn.Embedding(vocab_size, d_model)  # (778, 128)</code></pre>
+
+            <p>
+                When we input a sequence like "Hey", we get three 128-dimensional vectors
+                representing each character.
+            </p>
+
+            <h4>Positional Encoding</h4>
+
+            <p>
+                Transformers have no inherent sense of word order. "dog bites man" and "man bites dog"
+                contain the same tokens but mean different things. Positional encoding adds
+                information about where each token sits in the sequence.
+            </p>
+
+            <p>
+                I used sinusoidal positional encodings from the original Attention Is All You Need paper.
+                The formula uses sine and cosine at different frequencies:
+            </p>
+
+            <pre><code>PE(pos, 2i) = sin(pos / 10000^(2i/d_model))
+PE(pos, 2i+1) = cos(pos / 10000^(2i/d_model))</code></pre>
+
+            <p>
+                Lower positions use high-frequency oscillations, higher positions use lower frequencies.
+                This allows the model to learn to distinguish positions through these patterns.
+            </p>
+
+            <h4>Self-Attention</h4>
+
+            <p>
+                This is the heart of the transformer. For each token in the sequence, we compute
+                three vectors: Query (what I want to look for), Key (what I offer), and Value (what I have to share).
+            </p>
+
+            <p>
+                Attention works like this:
+            </p>
+
+            <ol>
+                <li>Dot-product every query with every key</li>
+                <li>Scale by square root of dimension</li>
+                <li>Apply softmax to get attention weights</li>
+                <li>Weight-sum all values by these attention scores</li>
+            </ol>
+
+            <pre><code>attention_scores = Q @ K.transpose(-2, -1) / sqrt(d_model)
+attention_weights = softmax(attention_scores, dim=-1)
+output = attention_weights @ V</code></pre>
+
+            <p>
+                The key insight: each token gets to "look at" every other token in the
+                sequence to gather relevant context. In "The cat sat on the mat", when
+                processing "sat", the model can look back at "The" and "cat" for subject information,
+                and look forward at "on" for prepositional context.
+            </p>
+
+            <h4>Feed-Forward Network</h4>
+
+            <p>
+                After attention, each token passes through a feed-forward network. This is two linear
+                layers with a non-linearity in between:
+            </p>
+
+            <pre><code>FFN(x) = GELU(x @ W1 + b1) @ W2 + b2</code></pre>
+
+            <p>
+                The hidden dimension is typically 4x the model dimension. For d_model=128,
+                the hidden dimension is 512. This gives the model capacity to process complex patterns
+                that attention alone cannot capture.
+            </p>
+
+            <h4>LayerNorm and Residual Connections</h4>
+
+            <p>
+                Each sub-layer (attention and FFN) has two stability features: LayerNorm and residual
+                connections.
+            </p>
+
+            <pre><code>x = LayerNorm(x + SubLayer(x))</code></pre>
+
+            <p>
+                The residual connection (x +) lets gradients flow directly through the
+                network during backprop. LayerNorm normalizes the output to have mean 0
+                and variance 1, stabilizing training.
+            </p>
+
+            <h4>Language Model Head</h4>
+
+            <p>
+                Finally, we project the output back to vocabulary size (778) to get logits.
+                These logits represent the probability of each character being the next one.
+            </p>
+
+            <pre><code>logits = x @ lm_head.W.T + lm_head.b  # (seq_len, 778)</code></pre>
+
+            <p>
+                We take the highest-logit character as our prediction, or sample from the
+                distribution for more creative outputs.
+            </p>
+
             <h3>Step 3: Pure NumPy to PyTorch</h3>
 
             <p>
@@ -322,12 +431,12 @@ class Tokenizer:
             </p>
 
             <p>
-                First, CPU was too slow. Every matrix multiplication runs sequentially on the processor. 
+                First, CPU was too slow. Every matrix multiplication runs sequentially on the processor.
                 With 711,900 training samples, training would have taken hours.
             </p>
 
             <p>
-                Second, my gradient calculations were incomplete. The backward pass only updated the final 
+                Second, my gradient calculations were incomplete. The backward pass only updated the final
                 layer. Everything else was frozen with random values.
             </p>
 
@@ -336,7 +445,7 @@ class Tokenizer:
             </p>
 
             <p>
-                So I switched to PyTorch. It handles GPU acceleration automatically, full backpropagation, 
+                So I switched to PyTorch. It handles GPU acceleration automatically, full backpropagation,
                 and optimized dataloaders. The concepts stayed the same. The engineering got easier.
             </p>
 
@@ -345,17 +454,17 @@ class Tokenizer:
             <h2>Challenges</h2>
 
             <p>
-                The hardest part was acknowledging that doing everything from scratch was not the right approach. 
+                The hardest part was acknowledging that doing everything from scratch was not the right approach.
                 I had to let go of the purity goal and use existing tools.
             </p>
 
             <div class="callout">
-                <strong>Key insight:</strong> PyTorch and TensorFlow exist for good reason. 
+                <strong>Key insight:</strong> PyTorch and TensorFlow exist for good reason.
                 The concepts are learnable, but the engineering matters just as much.
             </div>
 
             <p>
-                I also cleaned the corpus. My iMessages had URLs and some explicit content that did not 
+                I also cleaned the corpus. My iMessages had URLs and some explicit content that did not
                 belong in the training data.
             </p>
 
@@ -376,8 +485,8 @@ class Tokenizer:
    5  | 2.44 | 11.44   | 205.1</code></pre>
 
             <p>
-                The model learned character frequencies. It knows that "t" is extremely common 
-                in my writing (in words like "it", "that", "the", "to", "just"). 
+                The model learned character frequencies. It knows that "t" is extremely common
+                in my writing (in words like "it", "that", "the", "to", "just").
                 With only 200,000 parameters and 5 epochs, it was capturing distribution patterns.
             </p>
 
@@ -392,7 +501,7 @@ Prompt: "What"
 Output: "What t t t t t t t t t t t t t t t"</code></pre>
 
             <p>
-                The model repeats "t" constantly because it is the most frequent character in my messages. 
+                The model repeats "t" constantly because it is the most frequent character in my messages.
                 With more epochs and a larger model, it would learn longer patterns.
             </p>
 
@@ -401,20 +510,20 @@ Output: "What t t t t t t t t t t t t t t t"</code></pre>
             <h2>Reflection</h2>
 
             <p>
-                Building an LLM from scratch taught me why industry uses PyTorch. The concepts around 
-                attention and embeddings are learnable. But the hardware acceleration and automatic 
+                Building an LLM from scratch taught me why industry uses PyTorch. The concepts around
+                attention and embeddings are learnable. But the hardware acceleration and automatic
                 differentiation matter just as much as the theory.
             </p>
 
             <ul>
-                <li>More epochs needed — the model was still improving</li>
-                <li>Larger model — 128 dimensions is small, try 256 or 512</li>
-                <li>Stack more layers — one transformer block is just the start</li>
-                <li>Clean data matters — URLs and noise hurt performance</li>
+                <li>More epochs needed - the model was still improving</li>
+                <li>Larger model - 128 dimensions is small, try 256 or 512</li>
+                <li>Stack more layers - one transformer block is just the start</li>
+                <li>Clean data matters - URLs and noise hurt performance</li>
             </ul>
 
             <p>
-                This was step one. The model learned my writing style in the most basic way. 
+                This was step one. The model learned my writing style in the most basic way.
                 Now I need to teach it more.
             </p>
 

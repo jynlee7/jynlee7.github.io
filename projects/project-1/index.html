@@ -216,7 +216,7 @@
 
                 <!-- External repo / demo links — update href values -->
                 <div class="meta-links">
-                    <a href="#" target="_blank">GitHub ↗</a>
+                    <a href="https://github.com/jynlee7/building-myself" target="_blank">GitHub ↗</a>
                     <a href="#" target="_blank">Live Demo ↗</a>
                 </div>
             </div>
@@ -239,7 +239,15 @@
             <h2>Overview</h2>
 
             <p>
-                I am building an LLM from scratch. No frameworks, no libraries, no nothing. Just pure math and code.
+                I am building an LLM from scratch. No frameworks, no pretrained weights, no nothing.
+                Just pure math and code. The goal was simple: understand how LLMs actually work by implementing
+                every component myself.
+            </p>
+
+            <p>
+                The data? My own text messages. I extracted 40,000 iMessages from my Mac, totaling
+                711,000 characters. 778 unique characters in my vocabulary. This is what happens when
+                you text your friends constantly.
             </p>
 
 
@@ -247,66 +255,168 @@
             <h2>Approach</h2>
 
             <p>
-                The first thing I learned was the structure of an LLM. 
+                The first thing I learned was the structure of an LLM.
                 We know that most modern LLMs are based on the <i>transformer</i> architecture.
             </p>
 
             <img src="transformer.png" class="project-img" alt="transformer">
             <p class="img-caption">Transformer architecture</p>
 
-            <ol>
-                <li><strong>Step 1:</strong> Describe the first major step you took.</li>
-                <li><strong>Step 2:</strong> Describe the second step.</li>
-                <li><strong>Step 3:</strong> And so on...</li>
-            </ol>
+            <h3>Step 1: Tokenization</h3>
 
-            <!--
-        Code example:
-        <pre><code>def my_function():
-    return "hello world"</code></pre>
-      -->
+            <p>
+                Before a model can learn anything, it needs a way to read text. The computer 
+                does not understand letters, only numbers. Tokenization converts raw text into 
+                numbers the model can process.
+            </p>
+
+            <p>
+                I used character-level tokenization. Each unique character in my corpus 
+                becomes its own token. No complex algorithms, no merging rules. Just count 
+                every unique character and assign it an ID.
+            </p>
+
+            <pre><code>import numpy as np
+
+class Tokenizer:
+    def __init__(self, corpus: str = None):
+        self.vocab = {}
+        self.id_to_token = {}
+        if corpus:
+            self.build_vocab(corpus)
+
+    def build_vocab(self, corpus: str):
+        unique_chars = sorted(set(corpus))
+        self.vocab = {ch: i for i, ch in enumerate(unique_chars)}
+        self.id_to_token = {i: ch for ch, i in self.vocab.items()}
+
+    def encode(self, text: str) -> list[int]:
+        return [self.vocab[ch] for ch in text if ch in self.vocab]
+
+    def decode(self, ids: list[int]) -> str:
+        return ''.join(self.id_to_token[i] for i in ids if i in self.id_to_token)</code></pre>
+
+            <p>
+                Running this on my iMessages gave a vocabulary size of <strong>778</strong> unique characters. 
+                This includes every letter, emoji, punctuation mark, and URL I have ever texted.
+            </p>
+
+            <h3>Step 2: The Architecture</h3>
+
+            <p>
+                After tokenization, I built the transformer. Here is what goes into the model:
+            </p>
+
+            <ul>
+                <li><strong>Token Embedding</strong> — Each token ID becomes a 128-dimensional vector</li>
+                <li><strong>Positional Encoding</strong> — Sinusoidal patterns so the model knows word order</li>
+                <li><strong>Self-Attention</strong> — Every token looks at every other token to gather context</li>
+                <li><strong>Feed-Forward Network</strong> — Two linear layers with GELU activation</li>
+                <li><strong>LM Head</strong> — Project back to vocabulary for next-token prediction</li>
+            </ul>
+
+            <h3>Step 3: Pure NumPy to PyTorch</h3>
+
+            <p>
+                I started with pure Python and NumPy. The goal was educational. But there were three problems.
+            </p>
+
+            <p>
+                First, CPU was too slow. Every matrix multiplication runs sequentially on the processor. 
+                With 711,900 training samples, training would have taken hours.
+            </p>
+
+            <p>
+                Second, my gradient calculations were incomplete. The backward pass only updated the final 
+                layer. Everything else was frozen with random values.
+            </p>
+
+            <p>
+                Third, memory overhead. Every batch created new arrays in Python, killing performance.
+            </p>
+
+            <p>
+                So I switched to PyTorch. It handles GPU acceleration automatically, full backpropagation, 
+                and optimized dataloaders. The concepts stayed the same. The engineering got easier.
+            </p>
 
 
             <!-- ── CHALLENGES ─────────────────────────────────────────── -->
             <h2>Challenges</h2>
 
             <p>
-                What was the hardest part? What bugs or blockers did you hit?
+                The hardest part was acknowledging that doing everything from scratch was not the right approach. 
+                I had to let go of the purity goal and use existing tools.
             </p>
 
             <div class="callout">
-                💡 <strong>Key insight:</strong> Use this box to highlight an important
-                discovery or design decision.
+                <strong>Key insight:</strong> PyTorch and TensorFlow exist for good reason. 
+                The concepts are learnable, but the engineering matters just as much.
             </div>
+
+            <p>
+                I also cleaned the corpus. My iMessages had URLs and some explicit content that did not 
+                belong in the training data.
+            </p>
 
 
             <!-- ── RESULTS ────────────────────────────────────────────── -->
             <h2>Results</h2>
 
             <p>
-                What did you achieve? Include metrics, screenshots, or output examples.
+                After 5 epochs on GPU, the model trained in 3.5 minutes. Here is how it performed:
             </p>
 
-            <!--
-        Image grid example:
-        <div class="result-grid">
-          <img src="result-a.png" alt="Result A">
-          <img src="result-b.png" alt="Result B">
-        </div>
-      -->
+            <pre><code>Epoch | Loss | Perplexity | Time (s)
+------|------|----------|-------
+   1  | 2.51 | 12.31   | 41.3
+   2  | 2.46 | 11.66   | 81.9
+   3  | 2.44 | 11.52   | 123.7
+   4  | 2.45 | 11.60   | 164.3
+   5  | 2.44 | 11.44   | 205.1</code></pre>
+
+            <p>
+                The model learned character frequencies. It knows that "t" is extremely common 
+                in my writing (in words like "it", "that", "the", "to", "just"). 
+                With only 200,000 parameters and 5 epochs, it was capturing distribution patterns.
+            </p>
+
+            <p>
+                Sample generation:
+            </p>
+
+            <pre><code>Prompt: "Hey"
+Output: "Hey t t t t t t t t t t t t t t t"
+
+Prompt: "What"
+Output: "What t t t t t t t t t t t t t t t"</code></pre>
+
+            <p>
+                The model repeats "t" constantly because it is the most frequent character in my messages. 
+                With more epochs and a larger model, it would learn longer patterns.
+            </p>
 
 
             <!-- ── REFLECTION ─────────────────────────────────────────── -->
             <h2>Reflection</h2>
 
             <p>
-                What would you do differently? What did you learn? What are next steps?
+                Building an LLM from scratch taught me why industry uses PyTorch. The concepts around 
+                attention and embeddings are learnable. But the hardware acceleration and automatic 
+                differentiation matter just as much as the theory.
             </p>
 
             <ul>
-                <li>Improvement idea 1</li>
-                <li>Improvement idea 2</li>
+                <li>More epochs needed — the model was still improving</li>
+                <li>Larger model — 128 dimensions is small, try 256 or 512</li>
+                <li>Stack more layers — one transformer block is just the start</li>
+                <li>Clean data matters — URLs and noise hurt performance</li>
             </ul>
+
+            <p>
+                This was step one. The model learned my writing style in the most basic way. 
+                Now I need to teach it more.
+            </p>
 
         </article>
 

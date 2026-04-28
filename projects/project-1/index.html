@@ -402,11 +402,6 @@ class Tokenizer:
             </p>
 
             <p>
-                After attention, each token passes through a feed-forward network. This is two linear
-                layers with a non-linearity in between:
-            </p>
-
-            <p>
                 $$FFN(x) = GELU(xW_1 + b_1)W_2 + b_2$$
             </p>
 
@@ -449,7 +444,135 @@ class Tokenizer:
                 distribution for more creative outputs.
             </p>
 
-            <h3>Step 3: Pure NumPy to PyTorch</h3>
+            <h3>Step 4: The Math Behind Language Modeling</h3>
+
+            <p>
+                Building an LLM from scratch means understanding the loss function. Language modeling
+                is next-token prediction. Given a sequence, the model predicts the next character.
+            </p>
+
+            <h4>Cross-Entropy Loss</h4>
+
+            <p>
+                The standard loss function for language modeling is cross-entropy. For a single token:
+            </p>
+
+            <p>
+                $$\mathcal{L}_{CE} = -\sum_{i} y_i \log(\hat{y}_i)$$
+            </p>
+
+            <p>
+                Where $y$ is the one-hot ground truth (1 at the actual next token position,
+                0 everywhere else), and $\hat{y}$ is the predicted probability distribution.
+            </p>
+
+            <p>
+                In practice, since $y$ is one-hot, this simplifies to:
+            </p>
+
+            <p>
+                $$\mathcal{L}_{CE} = -\log(\hat{y}_{target})$$
+            </p>
+
+            <p>
+                If the model assigns 80% probability to the correct token, the loss is $-\log(0.8) = 0.223$.
+                If it assigns 1%, the loss is $-\log(0.01) = 4.605$. The model is heavily penalized
+                for being wrong with high confidence.
+            </p>
+
+            <h4>Perplexity</h4>
+
+            <p>
+                Perplexity is the standard metric for language models:
+            </p>
+
+            <p>
+                $$\text{Perplexity} = e^{\mathcal{L}_{CE}}$$
+            </p>
+
+            <p>
+                Lower perplexity is better. A perplexity of 10 means the model is as confused
+                as if it were randomly guessing among 10 equally likely options. My model achieved
+                a perplexity of 11.44 after training.
+            </p>
+
+            <h4>Gradient Descent</h4>
+
+            <p>
+                To train the model, we use gradient descent:
+            </p>
+
+            <p>
+                $$W_{new} = W_{old} - \eta \nabla \mathcal{L}$$
+            </p>
+
+            <p>
+                Where $\eta$ is the learning rate and $\nabla \mathcal{L}$ is the gradient of the loss
+                with respect to the weights. The gradient tells us the direction to move to reduce loss.
+            </p>
+
+            <p>
+                The chain rule is what makes deep learning work. For the attention mechanism:
+            </p>
+
+            <p>
+                $$\frac{\partial \mathcal{L}}{\partial \theta} = \frac{\partial \mathcal{L}}{\partial o} \cdot \frac{\partial o}{\partial a} \cdot \frac{\partial a}{\partial \theta}$$
+            </p>
+
+            <p>
+                Each arrow is a gradient multiplied together. This is backpropagation, and it needs
+                to flow through every parameter in the model.
+            </p>
+
+            <h4>Softmax</h4>
+
+            <p>
+                The softmax function converts raw logits into a probability distribution:
+            </p>
+
+            <p>
+                $$\text{softmax}(x)_i = \frac{e^{x_i}}{\sum_j e^{x_j}}$$
+            </p>
+
+            <p>
+                This ensures all outputs sum to 1 and the highest logit gets the highest probability.
+                The exponential function amplifies differences - a logit of 2.0 and 1.0 becomes
+                $e^2 / e^1 = 7.39$ times more likely.
+            </p>
+
+            <h4>GELU Activation</h4>
+
+            <p>
+                GELU (Gaussian Error Linear Unit) is the activation used in GPT:
+            </p>
+
+            <p>
+                $$GELU(x) = x \cdot \Phi(x)$$
+            </p>
+
+            <p>
+                Where $\Phi(x)$ is the cumulative distribution function of the standard normal distribution.
+                Unlike ReLU (which zeros out negatives entirely), GELU smoothly gates values based on
+                how positive they are. This subtle difference improves performance.
+            </p>
+
+            <h4>Matrix Multiplication Complexity</h4>
+
+            <p>
+                One thing I learned: attention is computationally expensive. For a sequence of length $n$:
+            </p>
+
+            <p>
+                $$\text{Complexity} = O(n^2 \cdot d)$$
+            </p>
+
+            <p>
+                The $n^2$ comes from every token attending to every other token. For my small model,
+                $n=32$ was manageable. For GPT-4 with context length 128K, this is the bottleneck that
+                drives so much research into efficient attention mechanisms.
+            </p>
+
+            <h3>Step 5: Pure NumPy to PyTorch</h3>
 
             <p>
                 I started with pure Python and NumPy. The goal was educational. But there were three problems.

@@ -8,6 +8,13 @@
     <link rel="icon" href="/favicon.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, { delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+        ]});"></script>
     <style>
         /* ================================================================
        PROJECT PAGE STYLES
@@ -308,11 +315,11 @@ class Tokenizer:
             </p>
 
             <ul>
-                <li><strong>Token Embedding</strong> — Each token ID becomes a 128-dimensional vector</li>
-                <li><strong>Positional Encoding</strong> — Sinusoidal patterns so the model knows word order</li>
-                <li><strong>Self-Attention</strong> — Every token looks at every other token to gather context</li>
-                <li><strong>Feed-Forward Network</strong> — Two linear layers with GELU activation</li>
-                <li><strong>LM Head</strong> — Project back to vocabulary for next-token prediction</li>
+                <li><strong>Token Embedding</strong> - Each token ID becomes a 128-dimensional vector</li>
+                <li><strong>Positional Encoding</strong> - Sinusoidal patterns so the model knows word order</li>
+                <li><strong>Self-Attention</strong> - Every token looks at every other token to gather context</li>
+                <li><strong>Feed-Forward Network</strong> - Two linear layers with GELU activation</li>
+                <li><strong>LM Head</strong> - Project back to vocabulary for next-token prediction</li>
             </ul>
 
             <h4>Token Embedding</h4>
@@ -343,8 +350,15 @@ class Tokenizer:
                 The formula uses sine and cosine at different frequencies:
             </p>
 
-            <pre><code>PE(pos, 2i) = sin(pos / 10000^(2i/d_model))
-PE(pos, 2i+1) = cos(pos / 10000^(2i/d_model))</code></pre>
+            <p>
+                I used sinusoidal positional encodings from the original Attention Is All You Need paper.
+                The formula uses sine and cosine at different frequencies:
+            </p>
+
+            <p>
+                $$PE(pos, 2i) = \sin\left(\frac{pos}{10000^{2i/d_{model}}}\right)$$
+                $$PE(pos, 2i+1) = \cos\left(\frac{pos}{10000^{2i/d_{model}}}\right)$$
+            </p>
 
             <p>
                 Lower positions use high-frequency oscillations, higher positions use lower frequencies.
@@ -369,9 +383,9 @@ PE(pos, 2i+1) = cos(pos / 10000^(2i/d_model))</code></pre>
                 <li>Weight-sum all values by these attention scores</li>
             </ol>
 
-            <pre><code>attention_scores = Q @ K.transpose(-2, -1) / sqrt(d_model)
-attention_weights = softmax(attention_scores, dim=-1)
-output = attention_weights @ V</code></pre>
+            <p>
+                $$Attention(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$
+            </p>
 
             <p>
                 The key insight: each token gets to "look at" every other token in the
@@ -387,7 +401,14 @@ output = attention_weights @ V</code></pre>
                 layers with a non-linearity in between:
             </p>
 
-            <pre><code>FFN(x) = GELU(x @ W1 + b1) @ W2 + b2</code></pre>
+            <p>
+                After attention, each token passes through a feed-forward network. This is two linear
+                layers with a non-linearity in between:
+            </p>
+
+            <p>
+                $$FFN(x) = GELU(xW_1 + b_1)W_2 + b_2$$
+            </p>
 
             <p>
                 The hidden dimension is typically 4x the model dimension. For d_model=128,
@@ -402,10 +423,12 @@ output = attention_weights @ V</code></pre>
                 connections.
             </p>
 
-            <pre><code>x = LayerNorm(x + SubLayer(x))</code></pre>
+            <p>
+                $$x_{out} = LayerNorm(x + SubLayer(x))$$
+            </p>
 
             <p>
-                The residual connection (x +) lets gradients flow directly through the
+                The residual connection $x +$ lets gradients flow directly through the
                 network during backprop. LayerNorm normalizes the output to have mean 0
                 and variance 1, stabilizing training.
             </p>
@@ -417,7 +440,9 @@ output = attention_weights @ V</code></pre>
                 These logits represent the probability of each character being the next one.
             </p>
 
-            <pre><code>logits = x @ lm_head.W.T + lm_head.b  # (seq_len, 778)</code></pre>
+            <p>
+                $$\text{logits} = xW^T + b$$
+            </p>
 
             <p>
                 We take the highest-logit character as our prediction, or sample from the
